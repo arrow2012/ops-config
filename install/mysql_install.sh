@@ -17,6 +17,7 @@ install_date_def ()
 install_mysql_pre ()
 {
     yum -y install wget cmake make library* g++ kdelibs5-dev libncurses5-dev gcc perl gzip tar ncurses-devel zlib-devel libxml2-devel zlib-devel pcre-devel libaio-devel openssl-devel gcc-c++ bison git
+    yum -y install libedit-devel pam-devel
 }
 
 MKDIR ()
