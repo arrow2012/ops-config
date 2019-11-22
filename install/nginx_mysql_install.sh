@@ -4,10 +4,6 @@ mysql_base_dir=${base_dir}/mysql
 soft_dir="/usr/local/src"
 PROCESS=$(cat /proc/cpuinfo |grep processor|wc -l)
 
-install_nginx_pre ()
-{
-    yum -y install jemalloc g++ yasm yasm-devel libXpm-devel libXpm libvpx libvpx-devel pcre-devel openssl-devel zlib-devel tcl git wget library* gcc perl gzip tar gcc-c++
-}
 
 install_mysql_pre ()
 {
@@ -22,16 +18,6 @@ MKDIR ()
     fi
 }
 
-mk_nginx_dir ()
-{
-    MKDIR ${app_dir}/nginx/lock/
-    MKDIR ${app_dir}/nginx/conf/vhost/
-    MKDIR ${log_dir}/app/
-    MKDIR ${www_dir}
-    MKDIR ${script_dir}
-    MKDIR ${backup_dir}/nginx/
-    MKDIR ${soft_dir}
-}
 
 mk_mysql_dir ()
 {
@@ -63,61 +49,6 @@ tar_media () {
     tar -xf ${soft_dir}/$fname -C ${soft_dir}
 }
 
-
-install_nginx()
-{
-    echo "INSTALL nginx ................................................"
-    install_date_def
-    groupadd -r www
-    useradd -r -g www -s /bin/false -M www
-    tar_media nginx-1.7.10.tar.gz
-    cd ${soft_dir}/nginx-1.7.10
-    ./configure \
-    --prefix=${app_dir}/nginx \
-    --sbin-path=${app_dir}/nginx/sbin/nginx \
-    --conf-path=${app_dir}/nginx/conf/nginx.conf \
-    --error-log-path=${log_dir}/nginx/error.log \
-    --http-log-path=${log_dir}/nginx/access.log \
-    --pid-path=${app_dir}/nginx/run/nginx.pid \
-    --lock-path=${app_dir}/nginx/lock/nginx.lock \
-    --user=www \
-    --group=www \
-    --with-http_ssl_module \
-    --with-http_flv_module \
-    --with-http_stub_status_module \
-    --with-http_gzip_static_module \
-    --with-google_perftools_module \
-    --http-client-body-temp-path=/var/tmp/nginx/client/ \
-    --http-proxy-temp-path=/var/tmp/nginx/proxy/ \
-    --http-fastcgi-temp-path=/var/tmp/nginx/fcgi/ \
-    --http-uwsgi-temp-path=/var/tmp/nginx/uwsgi \
-    --http-scgi-temp-path=/var/tmp/nginx/scgi \
-    --with-pcre  > /tmp/install_nginx_${install_date}.log 2>&1
-    if [ $? -ne 0 ];then
-        echo "configure with error ,see log  /tmp/install_nginx_${install_date}.log"
-        exit $?
-    else
-        make > /tmp/install_make_nginx_${install_date}.log 2>&1
-        make install > /tmp/install_makeinstall_nginx_${install_date}.log 2>&1
-        if [ $? -ne 0 ];then
-            echo "make or make install with error ,see log /tmp/install_makeinstall_nginx_${install_date}.log"
-            exit $?
-        fi
-    fi
-    MKDIR ${app_dir}/nginx/tmp/tcmalloc
-    chmod 0777 ${app_dir}/nginx/tmp/
-    chmod 0777 ${app_dir}/nginx/tmp/tcmalloc
-    \cp ${soft_dir}/nginx.conf ${app_dir}/nginx/conf/
-    \cp ${soft_dir}/demo.conf.default ${app_dir}/nginx/conf/vhost/
-    \cp ${soft_dir}/nginx /etc/init.d/
-    \cp ${soft_dir}/nginx_cut_log.sh ${script_dir}/
-    ln -s  ${app_dir}/nginx/sbin/nginx  /usr/sbin/
-    nginx_cut=`grep "nginx_cut_log.sh" /var/spool/cron/root |wc -l`
-    if [ $nginx_cut -eq 0 ];then
-        echo "0 0 * * *  /bin/bash  ${script_dir}/nginx_cut_log.sh" >> /var/spool/cron/root
-    fi
-    #    chown -R www.www /caimiao/www
-}
 
 install_mysql()
 {
@@ -213,16 +144,8 @@ case "$1" in
         install_mysql
         exit $?
     ;;
-    'nginx')
-        mk_nginx_dir
-        install_nginx_pre
-        down_nginx_soft
-        install_gpertools
-        install_nginx
-        exit $?
-    ;;
     *)
-        echo  "Usage: $0 {mysq|nginx}"
+        echo  "Usage: $0 {mysq}"
         exit 2
     ;;
 esac
