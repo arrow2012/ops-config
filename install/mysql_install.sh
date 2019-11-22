@@ -7,6 +7,13 @@ soft_dir="/usr/local/src"
 PROCESS=$(cat /proc/cpuinfo |grep processor|wc -l)
 
 
+
+install_date_def ()
+{
+    install_date=`date +%Y%m%d_%H_%M_%S`
+}
+
+
 install_mysql_pre ()
 {
     yum -y install wget cmake make library* g++ kdelibs5-dev libncurses5-dev gcc perl gzip tar ncurses-devel zlib-devel libxml2-devel zlib-devel pcre-devel libaio-devel openssl-devel gcc-c++ bison git
@@ -56,7 +63,6 @@ install_mysql()
 {
     echo "Ready to install mysql server ......"
     install_date_def
-    install_mysql_pre
     cd ${soft_dir}
     tar_media boost_1_59_0.tar.gz
     /usr/bin/unzip Percona-Server-5.7.28-31.zip
