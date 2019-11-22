@@ -67,6 +67,7 @@ install_mysql()
     tar_media boost_1_59_0.tar.gz
     /usr/bin/unzip Percona-Server-5.7.28-31.zip
     cd percona-server-Percona-Server-5.7.28-31/
+    /usr/bin/mv ../boost_1_59_0  .
     echo "Start to cmake mysql server ......"
     cmake -DCMAKE_INSTALL_PREFIX=${mysql_base_dir} \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -82,7 +83,7 @@ install_mysql()
     -DWITH_ARCHIVE_STORAGE_ENGINE=1 \
     -DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
     -DWITH_MEMORY_STORAGE_ENGINE=1 \
-    -DWITH_BOOST={soft_dir}/boost_1_59_0 \
+    -DWITH_BOOST=boost_1_59_0 \
     -DWITH_READLINE=1 \
     -DENABLED_LOCAL_INFILE=1 \
     -DWITH_ZLIB=system \
