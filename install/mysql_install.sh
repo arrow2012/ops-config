@@ -1,6 +1,6 @@
 #!/bin/sh
 
-current_dir=${dirname $0}
+current_dir=$(dirname $0)
 base_dir=/data/app
 mysql_base_dir=${base_dir}/mysql
 soft_dir="/usr/local/src"
