@@ -1,4 +1,6 @@
 #!/bin/sh
+
+current_dir=${dirname $0}
 base_dir=/data/app
 mysql_base_dir=${base_dir}/mysql
 soft_dir="/usr/local/src"
@@ -30,8 +32,8 @@ mk_mysql_dir ()
 
 down_mysql_soft()
 {
-    wget $PASS -NP ${soft_dir} https://github.com/percona/percona-server/archive/Percona-Server-5.7.28-31.zip
-    git clone https://github.com/arrow2012/ops-config.git ${soft_dir}/ops-config
+    wget $PASS -NP ${soft_dir} https://littlelightsv1-backup.oss-cn-shanghai.aliyuncs.com/soft/boost_1_59_0.tar.gz
+    wget $PASS -NP ${soft_dir} https://littlelightsv1-backup.oss-cn-shanghai.aliyuncs.com/soft/Percona-Server-5.7.28-31.zip
 }
 
 
@@ -56,6 +58,7 @@ install_mysql()
     install_date_def
     install_mysql_pre
     cd ${soft_dir}
+    tar_media boost_1_59_0.tar.gz
     /usr/bin/unzip Percona-Server-5.7.28-31.zip
     cd percona-server-Percona-Server-5.7.28-31/
     echo "Start to cmake mysql server ......"
@@ -73,6 +76,8 @@ install_mysql()
     -DWITH_ARCHIVE_STORAGE_ENGINE=1 \
     -DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
     -DWITH_MEMORY_STORAGE_ENGINE=1 \
+    -DDOWNLOAD_BOOST=1 \
+    -DWITH_BOOST={soft_dir}/boost_1_59_0 \
     -DWITH_READLINE=1 \
     -DENABLED_LOCAL_INFILE=1 \
     -DWITH_ZLIB=system \
@@ -94,8 +99,8 @@ install_mysql()
             exit $?
         fi
     fi
-    \cp ${soft_dir}/ops-config/mysql/my.cnf /etc/
-    \cp -fr ${soft_dir}/ops-config/mysql/my.cnf ${mysql_base_dir}/etc/
+    \cp ${current_dir}/../mysql/my.cnf /etc/
+    \cp -fr ${current_dir}/../mysql/my.cnf ${mysql_base_dir}/etc/
     groupadd mysql
     useradd -M -s /sbin/nologin -r -g mysql mysql
     cd ${mysql_base_dir}/
