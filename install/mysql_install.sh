@@ -17,7 +17,7 @@ install_date_def ()
 install_mysql_pre ()
 {
     yum -y install wget cmake make library* g++ kdelibs5-dev libncurses5-dev gcc perl gzip tar ncurses-devel zlib-devel libxml2-devel zlib-devel pcre-devel libaio-devel openssl-devel gcc-c++ bison git
-    yum -y install libedit-devel pam-devel
+    yum -y install libedit-devel pam-devel curl-devel
 }
 
 MKDIR ()
@@ -68,6 +68,7 @@ install_mysql()
     tar_media boost_1_59_0.tar.gz
     /usr/bin/unzip Percona-Server-5.7.28-31.zip
     cd percona-server-Percona-Server-5.7.28-31/
+    git submodule update
     /usr/bin/mv ../boost_1_59_0  .
     echo "Start to cmake mysql server ......"
     cmake -DCMAKE_INSTALL_PREFIX=${mysql_base_dir} \
