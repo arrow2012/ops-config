@@ -84,9 +84,9 @@ install_mysql()
     -DWITH_BLACKHOLE_STORAGE_ENGINE=1 \
     -DWITH_MEMORY_STORAGE_ENGINE=1 \
     -DWITH_BOOST=boost_1_59_0 \
-    -DWITH_READLINE=1 \
     -DENABLED_LOCAL_INFILE=1 \
     -DWITH_ZLIB=system \
+    -DWITH_EDITLINE=system \
     -DWITH_SSL=system >  /tmp/install_cmake_mysql_${install_date}.log 2>&1
     if [ $? -ne 0 ];then
         echo "cmake mysql with error ,see log  /tmp/install_cmake_mysql_${install_date}.log"
